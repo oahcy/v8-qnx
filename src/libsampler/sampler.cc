@@ -20,7 +20,7 @@
 #include <mach/mach.h>
 // OpenBSD doesn't have <ucontext.h>. ucontext_t lives in <signal.h>
 // and is a typedef for struct sigcontext. There is no uc_mcontext.
-#elif !V8_OS_OPENBSD
+#elif !V8_OS_OPENBSD || V8_OS_QNX
 #include <ucontext.h>
 #endif
 
@@ -325,7 +325,7 @@ class SignalHandler {
     sa.sa_sigaction = &HandleProfilerSignal;
     sigemptyset(&sa.sa_mask);
 #if V8_OS_QNX
-    sa.sa_flags = SA_SIGINFO | SA_ONSTACK;
+    sa.sa_flags = SA_SIGINFO;
 #else
     sa.sa_flags = SA_RESTART | SA_SIGINFO | SA_ONSTACK;
 #endif
@@ -372,7 +372,14 @@ void SignalHandler::FillRegisterState(void* context, RegisterState* state) {
        (V8_HOST_ARCH_PPC || V8_HOST_ARCH_S390 || V8_HOST_ARCH_PPC64)))
   mcontext_t& mcontext = ucontext->uc_mcontext;
 #endif
-#if V8_OS_LINUX
+
+#if V8_OS_QNX
+#if V8_HOST_ARCH_X64
+  state->pc = reinterpret_cast<void*>(mcontext.cpu.rip);
+  state->sp = reinterpret_cast<void*>(mcontext.cpu.rsp);
+  state->fp = reinterpret_cast<void*>(mcontext.cpu.rbp);
+#endif
+#elif V8_OS_LINUX
 #if V8_HOST_ARCH_IA32
   state->pc = reinterpret_cast<void*>(mcontext.gregs[REG_EIP]);
   state->sp = reinterpret_cast<void*>(mcontext.gregs[REG_ESP]);

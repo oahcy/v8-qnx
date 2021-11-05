@@ -4,6 +4,27 @@
 
 import("//build/toolchain/gcc_toolchain.gni")
 
+gcc_toolchain("test-toolchain") {
+  toolprefix = "/home/yc/code/qcc_custom_cc/" 
+  cc = "${toolprefix}qcc"
+  cxx = "${toolprefix}q++"
+
+  gcc_prefix="/home/yc/qnx710/host/linux/x86_64/usr/bin/x86_64-pc-nto-qnx7.1.0-"
+  readelf = "${gcc_prefix}readelf"
+  nm = "${gcc_prefix}nm"
+  ar = "${gcc_prefix}ar"
+  #ld = cxx
+  ld = "${gcc_prefix}g++"
+
+  # Flag that sets endianness
+
+  toolchain_args = {
+    is_clang = false
+    current_cpu = "x64"
+    current_os = "linux"
+  }
+}
+
 gcc_toolchain("mips-bundled") {
   toolprefix = rebase_path("//tools/mips_toolchain/bin/mips-mti-linux-gnu-",
                            root_build_dir)

@@ -61,7 +61,7 @@
 #include <sys/resource.h>
 #endif
 
-#if !defined(_AIX) && !defined(V8_OS_FUCHSIA)
+#if !defined(_AIX) && !defined(V8_OS_FUCHSIA) && !(__QNX__)
 #include <sys/syscall.h>
 #endif
 
@@ -78,7 +78,7 @@ extern int madvise(caddr_t, size_t, int);
 #endif
 
 #ifndef MADV_FREE
-#define MADV_FREE MADV_DONTNEED
+#define MADV_FREE 4
 #endif
 
 #if defined(V8_LIBC_GLIBC)
@@ -459,7 +459,7 @@ bool OS::DiscardSystemPages(void* address, size_t size) {
 #elif defined(_AIX) || defined(V8_OS_SOLARIS)
   int ret = madvise(reinterpret_cast<caddr_t>(address), size, MADV_FREE);
 #else
-  int ret = madvise(address, size, MADV_FREE);
+  int ret = 0;
 #endif
   if (ret != 0 && errno == ENOSYS)
     return true;  // madvise is not available on all systems.
@@ -470,7 +470,7 @@ bool OS::DiscardSystemPages(void* address, size_t size) {
 #if defined(_AIX) || defined(V8_OS_SOLARIS)
     ret = madvise(reinterpret_cast<caddr_t>(address), size, MADV_DONTNEED);
 #else
-    ret = madvise(address, size, MADV_DONTNEED);
+    ret = 0;
 #endif
   }
   return ret == 0;
@@ -618,7 +618,7 @@ int OS::GetCurrentThreadId() {
 #elif V8_OS_SOLARIS
   return static_cast<int>(pthread_self());
 #else
-  return static_cast<int>(reinterpret_cast<intptr_t>(pthread_self()));
+  return static_cast<int>((pthread_self()));
 #endif
 }
 
@@ -1021,7 +1021,7 @@ void Thread::SetThreadLocal(LocalStorageKey key, void* value) {
 // static
 Stack::StackSlot Stack::GetStackStart() {
   pthread_attr_t attr;
-  int error = pthread_getattr_np(pthread_self(), &attr);
+  int error = 1;
   if (!error) {
     void* base;
     size_t size;

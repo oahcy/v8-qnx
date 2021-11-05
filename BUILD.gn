@@ -4607,8 +4607,6 @@ v8_component("v8_libbase") {
     ]
 
     libs = [
-      "dl",
-      "rt",
     ]
   } else if (current_os == "aix") {
     sources += [
@@ -5149,6 +5147,10 @@ if (current_toolchain == v8_snapshot_toolchain) {
     ]
   }
 }
+  print("------------------------------toolchain$current_toolchain")
+  print("--------------------------hosttoolchain$host_toolchain")
+  print("------------------------customtoolchain$custom_toolchain")
+  print("------------------v8_snapshot_toolchain$v8_snapshot_toolchain")
 
 if (current_toolchain == v8_snapshot_toolchain) {
   v8_executable("torque") {

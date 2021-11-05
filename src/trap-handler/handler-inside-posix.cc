@@ -33,6 +33,10 @@
 #include <sys/ucontext.h>
 #endif
 
+#if defined(V8_OS_QNX)
+#include <ucontext.h>
+#endif
+
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -114,6 +118,8 @@ bool TryHandleSignal(int signum, siginfo_t* info, void* context) {
     auto* context_ip = &uc->uc_mcontext->__ss.__rip;
 #elif V8_OS_FREEBSD && V8_TARGET_ARCH_X64
     auto* context_ip = &uc->uc_mcontext.mc_rip;
+#elif V8_OS_QNX && V8_TARGET_ARCH_X64
+    auto* context_ip = &(uc->uc_mcontext.cpu.rip);
 #else
 #error Unsupported platform
 #endif
