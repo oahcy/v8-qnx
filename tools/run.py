@@ -10,7 +10,7 @@ from __future__ import print_function
 
 import subprocess
 import sys
-
+print('run : %s' % ' '.join(sys.argv[1:]))
 result = subprocess.call(sys.argv[1:])
 if result != 0:
   # Windows error codes such as 0xC0000005 and 0xC0000409 are much easier

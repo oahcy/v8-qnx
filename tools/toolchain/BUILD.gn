@@ -9,7 +9,7 @@ gcc_toolchain("test-toolchain") {
   cc = "${toolprefix}qcc"
   cxx = "${toolprefix}q++"
 
-  gcc_prefix="/home/yc/qnx710/host/linux/x86_64/usr/bin/x86_64-pc-nto-qnx7.1.0-"
+  gcc_prefix="/home/yc/qnx710/host/linux/x86_64/usr/bin/aarch64-unknown-nto-qnx7.1.0-"
   readelf = "${gcc_prefix}readelf"
   nm = "${gcc_prefix}nm"
   ar = "${gcc_prefix}ar"

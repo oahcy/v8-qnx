@@ -378,6 +378,10 @@ void SignalHandler::FillRegisterState(void* context, RegisterState* state) {
   state->pc = reinterpret_cast<void*>(mcontext.cpu.rip);
   state->sp = reinterpret_cast<void*>(mcontext.cpu.rsp);
   state->fp = reinterpret_cast<void*>(mcontext.cpu.rbp);
+#elif V8_HOST_ARCH_ARM64
+  state->pc = reinterpret_cast<void*>(AARCH64_GET_REGIP(&(mcontext.cpu)));
+  state->sp = reinterpret_cast<void*>(AARCH64_GET_REGSP(&(mcontext.cpu)));
+  state->lr = reinterpret_cast<void*>(mcontext.cpu.gpr[AARCH64_REG_LR]);
 #endif
 #elif V8_OS_LINUX
 #if V8_HOST_ARCH_IA32
